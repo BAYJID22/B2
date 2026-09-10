@@ -858,14 +858,18 @@
     <div class="ghost fade" style="--d:1150ms" aria-hidden="true">BAYJiD2</div>
 
     <!-- card 1 sits *behind* the canvas so the moss drapes over its shoulder -->
-    <article class="card card--about mask" style="--d:760ms; --pd:10; --pr:2.2">
-      <figure class="portal" data-delay="920">
-        <span class="portal-media"><img src="inner-green-assets/card-ethos.jpg" alt="A cushion of moss grown over lichen-crusted stones" loading="eager" decoding="async"></span>
-        <canvas class="pixel-reveal" aria-hidden="true"></canvas>
-      </figure>
-      <p class="label">Our Ethos</p>
-      <h2>Let the wild lead.</h2>
-    </article>
+  <article class="card card--about mask" style="--d:760ms; --pd:10; --pr:2.2">
+  <figure class="portal" data-delay="920">
+    <span class="portal-media">
+      <video autoplay loop muted playsinline poster="inner-green-assets/card-ethos.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+        <source src="video1.mp4" type="video/mp4">
+      </video>
+    </span>
+    <canvas class="pixel-reveal" aria-hidden="true"></canvas>
+  </figure>
+  <p class="label">Our Ethos</p>
+  <h2>Let the wild lead.</h2>
+</article>
 
     <!-- the About knob rides *outside* the card: the card has to stay a plain
          painted box under #scene, so anything that must sit in front of the
