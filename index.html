@@ -397,12 +397,13 @@
   .stat dd{ font-size:calc(13.5 * var(--u)); font-weight:600; color:var(--ink); line-height:calc(21 * var(--u)); }
 
   /* ── cards ───────────────────────────────────────────────────────────── */
-  .card{
-    position:absolute;
-    background:var(--card); border-radius:calc(46 * var(--u));
-    box-shadow:0 calc(30 * var(--u)) calc(70 * var(--u)) rgba(16,21,13,.30);
-    transition:box-shadow .8s var(--ease);
-  }
+  .card {
+  position: absolute;
+  background: #54574e; /* Replace with your color code */
+  border-radius: calc(46 * var(--u));
+  box-shadow: 0 calc(30 * var(--u)) calc(70 * var(--u)) rgba(16, 21, 13, .30);
+  transition: box-shadow .8s var(--ease);
+}
   /* No z-index here on purpose. z-index:auto keeps the card out of its own
      stacking context, so the body paints under #scene (the moss drapes over
      its shoulder) while .knob, at z 4, still sits in front of the moss. */
@@ -486,7 +487,7 @@
     position:absolute; z-index:4; right:calc(20 * var(--u)); bottom:calc(20 * var(--u));
     width:calc(58 * var(--u)); height:calc(58 * var(--u));
     border:0; border-radius:50%; cursor:pointer;
-    background:#fbfcf8; display:grid; place-items:center;
+    background:#afafae; display:grid; place-items:center;
     box-shadow:0 calc(6 * var(--u)) calc(16 * var(--u)) rgba(16,21,13,.18);
     transition:transform .5s var(--ease-out), background .4s var(--ease);
   }
@@ -794,9 +795,106 @@
   visibility: visible;
   transform: translate(-50%, -50%) scale(1);
 }
+
+/* Modal Container */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.video-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Background Backdrop with Blur & Darkening */
+.video-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Modal Content Box */
+.video-modal__content {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 800px;
+  background: #000;
+  border-radius: 12px;
+  overflow: visible; /* Allows close button to sit cleanly near top-right */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.video-modal__wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.video-modal__wrapper video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+}
+
+/* Close Icon Button (Top Right) */
+.video-modal__close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.video-modal__close:hover {
+  opacity: 0.7;
+}
+
+.video-modal__close svg {
+  width: 28px;
+  height: 28px;
+}
 </style>
 </head>
 <body>
+  <!-- Modal Video Popup -->
+<div id="videoModal" class="video-modal" aria-hidden="true">
+  <div class="video-modal__overlay"></div>
+  <div class="video-modal__content">
+    <button class="video-modal__close" id="closeModal" aria-label="Close video">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="video-modal__wrapper">
+      <video id="modalVideo" controls>
+        <source src="video1.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+</div>
+  
 
 <main class="hero" id="hero">
   <canvas id="scene"></canvas>
@@ -4443,6 +4541,38 @@ function openGameWithDelay(event, destinationUrl) {
     window.open(destinationUrl, '_blank');
   },2000);
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const openBtn = document.querySelector('.knob--about');
+  const modal = document.getElementById('videoModal');
+  const closeBtn = document.getElementById('closeModal');
+  const overlay = document.querySelector('.video-modal__overlay');
+  const video = document.getElementById('modalVideo');
+
+  function openModal() {
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    video.play();
+  }
+
+  function closeModal() {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    video.pause();
+    video.currentTime = 0; // Resets video back to start
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  // Close on Escape key press
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+      closeModal();
+    }
+  });
+});
 </script>
+
 </body>
 </html>
